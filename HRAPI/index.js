@@ -66,6 +66,28 @@ app.get('/totalcountries', async (req, res) => {
   }
 });
 
+app.get('/country', async (req, res) => {
+  try {
+    const result = await pool.query('select * from countries');
+    res.json(result.rows);
+  }
+  catch (err) {
+    res.status(500).json({ Error: err.message });
+  }
+});
+
+
+app.get('/employee', async (req, res) => {
+  try {
+    const result = await pool.query('select * from employees');
+    res.json(result.rows);
+  }
+  catch (err) {
+    res.status(500).json({ Error: err.message });
+  }
+});
+
+
 app.get('/q40', async (req, res) => {
   try {
     const result = await pool.query(`SELECT 
@@ -398,8 +420,7 @@ app.get('/q64', async (req, res) => {
   try {
     const result = await pool.query(`
       Select l.postal_code, c.country_name, r.region_name from locations l join countries c
-on l.country_id = c.country_id join regions r on c.region_id = r.region_id where r.region
-name = 'Asia' limit 5`);
+on l.country_id = c.country_id join regions r on c.region_id = r.region_id where region_name = "Asia" limit 5`);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ Error: err.message });
@@ -408,8 +429,7 @@ name = 'Asia' limit 5`);
 
 app.get('/q65', async (req, res) => {
   try {
-    const result = await pool.query(`
-      Select d.department_name, e.first_name, e.commission_pct from departments d join 
+    const result = await pool.query(`Select d.department_name, e.first_name, e.commission_pct from departments d join 
 employees e on d.department_id = e.department_id where commission pct < (Select avg
 (commission_pct) as avg_com from employees where commission_pct is not null) limit 5 `);
     res.json(result.rows);
